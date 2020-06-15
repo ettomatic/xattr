@@ -2,6 +2,7 @@ lib C
   fun getxattr(path: UInt8*, name: UInt8*, pointer: UInt8*, size: LibC::SizeT) : LibC::Int
   fun setxattr(path: UInt8*, name: UInt8*, value: UInt8*, pointer: UInt32, size: LibC::SizeT) : LibC::Int
   fun listxattr(path: UInt8*, pointer: UInt8*, size: LibC::SizeT) : LibC::Int
+  fun removexattr(path: UInt8*, name: UInt8*) : LibC::Int
 end
 
 module XAttr
@@ -32,6 +33,10 @@ module XAttr
     C.listxattr(path, ptr, size)
 
     String.new(ptr).split("\000", remove_empty: true)
+  end
+
+  def self.remove(path, key)
+    C.removexattr(path, key)
   end
 
   def self.raise_error

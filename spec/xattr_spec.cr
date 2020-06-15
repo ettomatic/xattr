@@ -69,4 +69,17 @@ describe XAttr do
       end
     end
   end
+
+  describe ".remove" do
+    it "removes the xattr from the target file" do
+      path = "spec/test_remove.txt"
+      file = File.touch(path)
+
+      XAttr.set(path, key, "mytag1")
+      XAttr.remove(path, key)
+
+      XAttr.list(path).should eq [] of String
+      File.delete(path)
+    end
+  end
 end
