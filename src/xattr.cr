@@ -7,25 +7,19 @@ module XAttr
   VERSION = "0.1.0"
 
   def self.get(path, key)
-    Errno.value = Errno::NONE
-
     size = C.getxattr(path, key, nil, 0)
     return unless size > 0
 
     ptr = Slice(UInt8).new(size)
     res = C.getxattr(path, key, ptr, size)
-
-    raise_error if Errno.value != Errno::NONE
+    raise_error if res == -1
 
     String.new(ptr)
   end
 
   def self.set(path, key, value)
-    Errno.value = Errno::NONE
-
     res = C.setxattr(path, key, value, value.bytesize, 0)
-
-    raise_error if Errno.value != Errno::NONE
+    raise_error if res == -1
 
     res
   end
