@@ -1,5 +1,7 @@
 # XAttr
 
+[![Build Status](https://travis-ci.org/ettomatic/xattr.svg?branch=master)](https://travis-ci.org/ettomatic/xattr)
+
 Crystal bindings to [XATTR](https://man7.org/linux/man-pages/man7/xattr.7.html).
 
 This library allow to manage extended file attributes (XATTR) as file metadata.
