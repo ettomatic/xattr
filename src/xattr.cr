@@ -36,7 +36,10 @@ module XAttr
   end
 
   def self.remove(path, key)
-    C.removexattr(path, key)
+    res = C.removexattr(path, key)
+    raise_error if res == -1
+
+    res
   end
 
   def self.raise_error

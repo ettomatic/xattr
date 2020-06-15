@@ -81,5 +81,11 @@ describe XAttr do
       XAttr.list(path).should eq [] of String
       File.delete(path)
     end
+
+    it "raise an exception if the target file is missing" do
+      expect_raises(IO::Error, "ENOENT - please check the target file") do
+        XAttr.remove("spec/not_there.txt", key)
+      end
+    end
   end
 end
