@@ -8,8 +8,23 @@ describe XAttr do
       path = "spec/test_get.txt"
       file = File.touch(path)
 
-      XAttr.get(path, key).should eq nil
+      XAttr.set(path, key, "mytag1")
+      XAttr.get(path, key).should eq "mytag1"
+
       File.delete(path)
+    end
+
+    it "returns nil if xattr is not set" do
+      path = "spec/test_get.txt"
+      file = File.touch(path)
+
+      XAttr.get(path, "foo").should eq nil
+
+      File.delete(path)
+    end
+
+    it "returns nil if target file is missing" do
+      XAttr.get("spec/not_there.txt", key).should eq nil
     end
   end
 
@@ -59,13 +74,19 @@ describe XAttr do
     end
 
     context "with no xattrs set on the file" do
-      it "returns the attrs assigned to a target file" do
+      it "returns an empty array" do
         path = "spec/test_list.txt"
         file = File.touch(path)
 
         XAttr.list(path).should eq [] of String
 
         File.delete(path)
+      end
+    end
+
+    context "with no file" do
+      it "returns an empty array" do
+        XAttr.list("spec/not_there.txt").should eq [] of String
       end
     end
   end

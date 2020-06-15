@@ -6,7 +6,7 @@ lib C
 end
 
 module XAttr
-  VERSION = "0.1.0"
+  VERSION = "0.2.0"
 
   def self.get(path, key)
     size = C.getxattr(path, key, nil, 0)
@@ -28,6 +28,7 @@ module XAttr
 
   def self.list(path)
     size = C.listxattr(path, nil, 0)
+    return [] of String unless size > 0
 
     ptr = Slice(UInt8).new(size)
     C.listxattr(path, ptr, size)
