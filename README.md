@@ -1,6 +1,9 @@
 # xattr
 
-TODO: Write a description here
+Crystal bindings to [XATTR](https://man7.org/linux/man-pages/man7/xattr.7.html).
+
+This library allow to manage extended file attributes (XATTR) as file metadata.
+
 
 ## Installation
 
@@ -9,7 +12,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      xattr:
-       github: your-github-user/xattr
+       github: ettomatic/xattr
    ```
 
 2. Run `shards install`
@@ -18,17 +21,31 @@ TODO: Write a description here
 
 ```crystal
 require "xattr"
+
+ xattr = XAttr.new("./myfile.txt")
+ xattr["tags"] = "mytag1,mytag2"
+ xattr["tags"]
+ # => "mytag1,mytag2"
+
+ xattr.list
+ # => ["tags"]
+
+ xattr.remove("tags")
+ xattr.list
+ # => []
+
+ xattr["tags"]
+ # => nil
 ```
 
-TODO: Write usage instructions here
 
 ## Development
+Still WIP
 
-TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/xattr/fork>)
+1. Fork it (<https://github.com/ettomatic/xattr/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -36,4 +53,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-name-here](https://github.com/your-github-user) - creator and maintainer
+- [Ettore Berardi](https://github.com/ettomatic) - creator and maintainer
