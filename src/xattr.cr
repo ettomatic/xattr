@@ -6,13 +6,13 @@ lib C
 end
 
 class XAttr
-  VERSION = "0.3.0"
+  VERSION = "0.4.0"
 
   def initialize(path : String)
     @path = path
   end
 
-  def get(key)
+  def [](key)
     size = C.getxattr(@path, key, nil, 0)
     return unless size > 0
 
@@ -23,7 +23,7 @@ class XAttr
     String.new(ptr)
   end
 
-  def set(key, value)
+  def []=(key, value)
     res = C.setxattr(@path, key, value, value.bytesize, 0)
     raise_error if res == -1
 

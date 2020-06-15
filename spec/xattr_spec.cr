@@ -9,8 +9,8 @@ describe XAttr do
       file = File.touch(path)
 
       xattr = XAttr.new(path)
-      xattr.set(key, "mytag1")
-      xattr.get(key).should eq "mytag1"
+      xattr[key] = "mytag1"
+      xattr[key].should eq "mytag1"
 
       File.delete(path)
     end
@@ -20,14 +20,14 @@ describe XAttr do
       file = File.touch(path)
 
       xattr = XAttr.new(path)
-      xattr.get("foo").should eq nil
+      xattr["foo"].should eq nil
 
       File.delete(path)
     end
 
     it "returns nil if target file is missing" do
       xattr = XAttr.new("spec/not_there.txt")
-      xattr.get(key).should eq nil
+      xattr[key].should eq nil
     end
   end
 
@@ -37,8 +37,8 @@ describe XAttr do
       file = File.touch(path)
 
       xattr = XAttr.new(path)
-      xattr.set(key, "mytag1")
-      xattr.get(key).should eq "mytag1"
+      xattr[key] = "mytag1"
+      xattr[key].should eq "mytag1"
 
       File.delete(path)
     end
@@ -48,11 +48,12 @@ describe XAttr do
       file = File.touch(path)
 
       xattr = XAttr.new(path)
-      xattr.set(key, "mytag1")
-      xattr.get(key).should eq "mytag1"
 
-      xattr.set(key, "mytag2")
-      xattr.get(key).should eq "mytag2"
+      xattr[key] = "mytag1"
+      xattr[key].should eq "mytag1"
+
+      xattr[key] = "mytag2"
+      xattr[key].should eq "mytag2"
 
       File.delete(path)
     end
@@ -60,7 +61,7 @@ describe XAttr do
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "ENOENT - please check the target file") do
         xattr = XAttr.new("spec/not_there.txt")
-        xattr.set(key, "mytag1")
+        xattr[key] = "mytag1"
       end
     end
   end
@@ -72,8 +73,9 @@ describe XAttr do
         file = File.touch(path)
 
         xattr = XAttr.new(path)
-        xattr.set(key, "mytag1")
-        xattr.set("user.xdg.comments", "foobar")
+
+        xattr[key] = "mytag1"
+        xattr["user.xdg.comments"] = "foobar"
 
         xattr.list.should eq ["user.xdg.tags", "user.xdg.comments"]
 
@@ -107,7 +109,8 @@ describe XAttr do
       file = File.touch(path)
 
       xattr = XAttr.new(path)
-      xattr.set(key, "mytag1")
+      xattr[key] = "mytag1"
+
       xattr.remove(key)
 
       xattr.list.should eq [] of String
