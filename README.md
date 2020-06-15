@@ -1,4 +1,4 @@
-# xattr
+# XAttr
 
 Crystal bindings to [XATTR](https://man7.org/linux/man-pages/man7/xattr.7.html).
 
@@ -37,11 +37,6 @@ require "xattr"
  xattr["tags"]
  # => nil
 ```
-
-
-## Development
-Still WIP
-
 
 ## Contributing
 
