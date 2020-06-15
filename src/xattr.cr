@@ -25,6 +25,6 @@ module XAttr
   end
 
   def self.raise_error
-    raise IO::Error.new("please check the target file: #{Errno.value}")
+    raise IO::Error.new("#{Errno.value} - please check the target file")
   end
 end
