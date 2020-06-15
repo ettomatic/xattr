@@ -20,14 +20,14 @@ class XAttr
 
     ptr = Slice(LibC::Char).new(size)
     res = LibXAttr.getxattr(@path, key, ptr, size)
-    raise_error if res == -1
+    raise_error(res) if res == -1
 
     String.new(ptr)
   end
 
   def []=(key, value)
     res = LibXAttr.setxattr(@path, key, value, value.bytesize, 0)
-    raise_error if res == -1
+    raise_error(res) if res == -1
 
     res
   end
@@ -44,12 +44,12 @@ class XAttr
 
   def remove(key)
     res = LibXAttr.removexattr(@path, key)
-    raise_error if res == -1
+    raise_error(res) if res == -1
 
     res
   end
 
-  private def raise_error
-    raise IO::Error.new("#{Errno.value} - please check the target file")
+  private def raise_error(res)
+    raise IO::Error.from_errno("Please check the target file")
   end
 end

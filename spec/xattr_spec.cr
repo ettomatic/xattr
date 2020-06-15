@@ -59,7 +59,7 @@ describe XAttr do
     end
 
     it "raise an exception if the target file is missing" do
-      expect_raises(IO::Error, "ENOENT - please check the target file") do
+      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/not_there.txt")
         xattr[key] = "mytag1"
       end
@@ -118,7 +118,7 @@ describe XAttr do
     end
 
     it "raise an exception if the target file is missing" do
-      expect_raises(IO::Error, "ENOENT - please check the target file") do
+      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/not_there.txt")
         xattr.remove(key)
       end
