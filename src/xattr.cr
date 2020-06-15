@@ -5,45 +5,49 @@ lib C
   fun removexattr(path: UInt8*, name: UInt8*) : LibC::Int
 end
 
-module XAttr
-  VERSION = "0.2.0"
+class XAttr
+  VERSION = "0.3.0"
 
-  def self.get(path, key)
-    size = C.getxattr(path, key, nil, 0)
+  def initialize(path : String)
+    @path = path
+  end
+
+  def get(key)
+    size = C.getxattr(@path, key, nil, 0)
     return unless size > 0
 
     ptr = Slice(UInt8).new(size)
-    res = C.getxattr(path, key, ptr, size)
+    res = C.getxattr(@path, key, ptr, size)
     raise_error if res == -1
 
     String.new(ptr)
   end
 
-  def self.set(path, key, value)
-    res = C.setxattr(path, key, value, value.bytesize, 0)
+  def set(key, value)
+    res = C.setxattr(@path, key, value, value.bytesize, 0)
     raise_error if res == -1
 
     res
   end
 
-  def self.list(path)
-    size = C.listxattr(path, nil, 0)
+  def list
+    size = C.listxattr(@path, nil, 0)
     return [] of String unless size > 0
 
     ptr = Slice(UInt8).new(size)
-    C.listxattr(path, ptr, size)
+    C.listxattr(@path, ptr, size)
 
     String.new(ptr).split("\000", remove_empty: true)
   end
 
-  def self.remove(path, key)
-    res = C.removexattr(path, key)
+  def remove(key)
+    res = C.removexattr(@path, key)
     raise_error if res == -1
 
     res
   end
 
-  def self.raise_error
+  private def raise_error
     raise IO::Error.new("#{Errno.value} - please check the target file")
   end
 end

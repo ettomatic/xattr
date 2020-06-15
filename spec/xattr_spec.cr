@@ -8,8 +8,9 @@ describe XAttr do
       path = "spec/test_get.txt"
       file = File.touch(path)
 
-      XAttr.set(path, key, "mytag1")
-      XAttr.get(path, key).should eq "mytag1"
+      xattr = XAttr.new(path)
+      xattr.set(key, "mytag1")
+      xattr.get(key).should eq "mytag1"
 
       File.delete(path)
     end
@@ -18,13 +19,15 @@ describe XAttr do
       path = "spec/test_get.txt"
       file = File.touch(path)
 
-      XAttr.get(path, "foo").should eq nil
+      xattr = XAttr.new(path)
+      xattr.get("foo").should eq nil
 
       File.delete(path)
     end
 
     it "returns nil if target file is missing" do
-      XAttr.get("spec/not_there.txt", key).should eq nil
+      xattr = XAttr.new("spec/not_there.txt")
+      xattr.get(key).should eq nil
     end
   end
 
@@ -33,8 +36,9 @@ describe XAttr do
       path = "spec/test_set.txt"
       file = File.touch(path)
 
-      XAttr.set(path, key, "mytag1")
-      XAttr.get(path, key).should eq "mytag1"
+      xattr = XAttr.new(path)
+      xattr.set(key, "mytag1")
+      xattr.get(key).should eq "mytag1"
 
       File.delete(path)
     end
@@ -43,18 +47,20 @@ describe XAttr do
       path = "spec/test_set.txt"
       file = File.touch(path)
 
-      XAttr.set(path, key, "mytag1")
-      XAttr.get(path, key).should eq "mytag1"
+      xattr = XAttr.new(path)
+      xattr.set(key, "mytag1")
+      xattr.get(key).should eq "mytag1"
 
-      XAttr.set(path, key, "mytag2")
-      XAttr.get(path, key).should eq "mytag2"
+      xattr.set(key, "mytag2")
+      xattr.get(key).should eq "mytag2"
 
       File.delete(path)
     end
 
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "ENOENT - please check the target file") do
-        XAttr.set("spec/not_there.txt", key, "mytag1")
+        xattr = XAttr.new("spec/not_there.txt")
+        xattr.set(key, "mytag1")
       end
     end
   end
@@ -64,10 +70,12 @@ describe XAttr do
       it "returns the attrs assigned to a target file" do
         path = "spec/test_list.txt"
         file = File.touch(path)
-        XAttr.set(path, key, "mytag1")
-        XAttr.set(path, "user.xdg.comments", "foobar")
 
-        XAttr.list(path).should eq ["user.xdg.tags", "user.xdg.comments"]
+        xattr = XAttr.new(path)
+        xattr.set(key, "mytag1")
+        xattr.set("user.xdg.comments", "foobar")
+
+        xattr.list.should eq ["user.xdg.tags", "user.xdg.comments"]
 
         File.delete(path)
       end
@@ -78,7 +86,8 @@ describe XAttr do
         path = "spec/test_list.txt"
         file = File.touch(path)
 
-        XAttr.list(path).should eq [] of String
+        xattr = XAttr.new(path)
+        xattr.list.should eq [] of String
 
         File.delete(path)
       end
@@ -86,7 +95,8 @@ describe XAttr do
 
     context "with no file" do
       it "returns an empty array" do
-        XAttr.list("spec/not_there.txt").should eq [] of String
+        xattr = XAttr.new("spec/not_there.txt")
+        xattr.list.should eq [] of String
       end
     end
   end
@@ -96,16 +106,18 @@ describe XAttr do
       path = "spec/test_remove.txt"
       file = File.touch(path)
 
-      XAttr.set(path, key, "mytag1")
-      XAttr.remove(path, key)
+      xattr = XAttr.new(path)
+      xattr.set(key, "mytag1")
+      xattr.remove(key)
 
-      XAttr.list(path).should eq [] of String
+      xattr.list.should eq [] of String
       File.delete(path)
     end
 
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "ENOENT - please check the target file") do
-        XAttr.remove("spec/not_there.txt", key)
+        xattr = XAttr.new("spec/not_there.txt")
+        xattr.remove(key)
       end
     end
   end
