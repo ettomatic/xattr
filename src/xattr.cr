@@ -1,7 +1,7 @@
 # Crystal bindings to XATTR.
 # This library allows to manage extended file attributes (XATTR) as file metadata.
 class XAttr
-  VERSION = "0.4.0"
+  VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify }}
 
   lib LibXAttr
     {% if flag?(:linux) %}
