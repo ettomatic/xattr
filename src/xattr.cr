@@ -1,13 +1,20 @@
 # Crystal bindings to XATTR.
-# This library allow to manage extended file attributes (XATTR) as file metadata.
+# This library allows to manage extended file attributes (XATTR) as file metadata.
 class XAttr
   VERSION = "0.4.0"
 
   lib LibXAttr
-    fun getxattr(path : LibC::Char*, name : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
-    fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, pointer : UInt32, size : LibC::SizeT) : LibC::Int
-    fun listxattr(path : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
-    fun removexattr(path : LibC::Char*, name : LibC::Char*) : LibC::Int
+    {% if flag?(:linux) %}
+      fun getxattr(path : LibC::Char*, name : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
+      fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, pointer : UInt32, size : LibC::SizeT) : LibC::Int
+      fun listxattr(path : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
+      fun removexattr(path : LibC::Char*, name : LibC::Char*) : LibC::Int
+    {% elsif flag?(:darwin) %}
+      # TODO: WIP
+      {% raise "No XAttr::LibXAttr implementation available for this platform" %}
+    {% else %}
+      {% raise "No XAttr::LibXAttr implementation available for this platform" %}
+    {% end %}
   end
 
   def initialize(path : String)
