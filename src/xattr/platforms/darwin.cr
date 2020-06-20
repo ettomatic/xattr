@@ -4,13 +4,13 @@ module XAttr
       lib LibXAttr
         {% if flag?(:darwin) %}
           fun getxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, size : LibC::SizeT, position : LibC::UInt32T, options : LibC::Int) : LibC::Int
-             fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, size : LibC::SizeT, position : LibC::UInt32T, options : LibC::Int) : LibC::Int
-                fun listxattr(path : LibC::Char*, list : LibC::Char*, size : LibC::SizeT, options : LibC::Int) : LibC::Int
-                   fun removexattr(path : LibC::Char*, name : LibC::Char*, options : LibC::Int) : LibC::Int
+          fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, size : LibC::SizeT, position : LibC::UInt32T, options : LibC::Int) : LibC::Int
+          fun listxattr(path : LibC::Char*, list : LibC::Char*, size : LibC::SizeT, options : LibC::Int) : LibC::Int
+          fun removexattr(path : LibC::Char*, name : LibC::Char*, options : LibC::Int) : LibC::Int
         {% end %}
       end
 
-      def self.get(path, key, value)
+      def self.get(path, key, value, size)
         LibXAttr.getxattr(path, key, ptr, size, 0, 0)
       end
 
