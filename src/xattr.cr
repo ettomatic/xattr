@@ -5,9 +5,9 @@ class XAttr
 
   lib LibXAttr
     {% if flag?(:linux) %}
-      fun getxattr(path : LibC::Char*, name : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
-      fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, pointer : UInt32, size : LibC::SizeT) : LibC::Int
-      fun listxattr(path : LibC::Char*, pointer : LibC::Char*, size : LibC::SizeT) : LibC::Int
+      fun getxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, size : LibC::SizeT) : LibC::Int
+      fun setxattr(path : LibC::Char*, name : LibC::Char*, value : LibC::Char*, size : LibC::SizeT, options : LibC::Int) : LibC::Int
+      fun listxattr(path : LibC::Char*, list : LibC::Char*, size : LibC::SizeT) : LibC::Int
       fun removexattr(path : LibC::Char*, name : LibC::Char*) : LibC::Int
     {% elsif flag?(:darwin) %}
       # TODO: WIP
