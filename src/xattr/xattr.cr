@@ -45,9 +45,9 @@ module XAttr
 
     private def bindings
       {% if flag?(:linux) %}
-        Bindingss::Linux
+        Platforms::Linux
       {% elsif flag?(:darwin) %}
-        Bindingss::Darwin
+        Platforms::Darwin
       {% else %}
         {% raise "XAttr Not implemented for this platform" %}
       {% end %}
