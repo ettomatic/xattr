@@ -4,8 +4,9 @@
 
 Crystal bindings to [XATTR](https://man7.org/linux/man-pages/man7/xattr.7.html).
 
-This library allow to manage extended file attributes (XATTR) as file metadata.
+This library allows to manage extended file attributes (XATTR). Filesystem support implemented for Linux and MacOS.
 
+Extended attributes are name:value pairs associated permanently with files and directories and can be used to add semantic metadata, see [guidelines](https://www.freedesktop.org/wiki/CommonExtendedAttributes/).
 
 ## Installation
 
