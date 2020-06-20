@@ -68,7 +68,7 @@ describe XAttr do
 
   describe ".list" do
     context "with xattrs set on the target file" do
-      it "returns the attrs assigned to a target file" do
+      it "returns the attrs assigned to a target file sorted alphabetically" do
         path = "spec/test_list.txt"
         file = File.touch(path)
 
@@ -77,7 +77,7 @@ describe XAttr do
         xattr[key] = "mytag1"
         xattr["user.xdg.comments"] = "foobar"
 
-        xattr.list.should eq ["user.xdg.tags", "user.xdg.comments"]
+        xattr.list.should eq ["user.xdg.comments", "user.xdg.tags"]
 
         File.delete(path)
       end

@@ -11,7 +11,7 @@ module XAttr
       end
 
       def self.get(path, key, value, size)
-        LibXAttr.getxattr(path, key, ptr, size, 0, 0)
+        LibXAttr.getxattr(path, key, value, size, 0, 0)
       end
 
       def self.set(path, key, value, size)
@@ -19,7 +19,7 @@ module XAttr
       end
 
       def self.list(path, list, size)
-        LibXAttr.listxattr(path, ptr, size, 0)
+        LibXAttr.listxattr(path, list, size, 0)
       end
 
       def self.remove(path, key)

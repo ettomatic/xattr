@@ -29,7 +29,7 @@ module XAttr
       ptr = Slice(LibC::Char).new(size)
       bindings.list(@path, ptr, size)
 
-      String.new(ptr).split("\000", remove_empty: true)
+      String.new(ptr).split("\000", remove_empty: true).sort
     end
 
     def remove(key)
