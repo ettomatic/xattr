@@ -2,18 +2,15 @@ require "./spec_helper"
 
 describe "symlinks" do
   key = "user.xdg.tags"
-  path = __DIR__ + "/test_get.txt"
-  symlink_path = __DIR__ + "/test_get_symlink.txt"
+  path = __DIR__ + "/test_dir/test_get.txt"
+  symlink_path = __DIR__ + "/test_dir/test_get_symlink.txt"
 
   context "on Linux" do
     before_each do
+      Dir["spec/test_dir/*.txt"].each { |f| File.delete(f) }
+
       file = File.touch(path)
       symlink = File.symlink(path, symlink_path)
-    end
-
-    after_each do
-      File.delete(path)
-      File.delete(symlink_path)
     end
 
     context "with no_follow set to true" do
