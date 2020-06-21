@@ -39,6 +39,18 @@ module XAttr
       res
     end
 
+    def each
+      list.each do |k|
+        yield k, self.[](k)
+      end
+    end
+
+    def to_h
+      hash = {} of String => String | Nil
+      each { |k, v| hash[k] = v }
+      hash
+    end
+
     private def raise_error(res)
       raise IO::Error.from_errno("Please check the target file")
     end

@@ -3,7 +3,7 @@ require "./spec_helper"
 describe XAttr do
   key = "user.xdg.tags"
 
-  describe ".get" do
+  describe "get" do
     it "returns the specific xattr value assigned to a target file" do
       path = "spec/test_get.txt"
       file = File.touch(path)
@@ -31,7 +31,7 @@ describe XAttr do
     end
   end
 
-  describe ".set" do
+  describe "set" do
     it "sets a value to the target file" do
       path = "spec/test_set.txt"
       file = File.touch(path)
@@ -66,7 +66,7 @@ describe XAttr do
     end
   end
 
-  describe ".list" do
+  describe "list" do
     context "with xattrs set on the target file" do
       it "returns the attrs assigned to a target file sorted alphabetically" do
         path = "spec/test_list.txt"
@@ -103,7 +103,7 @@ describe XAttr do
     end
   end
 
-  describe ".remove" do
+  describe "remove" do
     it "removes the xattr from the target file" do
       path = "spec/test_remove.txt"
       file = File.touch(path)
@@ -122,6 +122,20 @@ describe XAttr do
         xattr = XAttr.new("spec/not_there.txt")
         xattr.remove(key)
       end
+    end
+  end
+
+  describe "to_h" do
+    it " returns an hash map of attrs/values" do
+      path = "spec/test_hash.txt"
+      file = File.touch(path)
+
+      xattr = XAttr.new(path)
+
+      xattr[key] = "mytag1"
+      xattr["user.xdg.comments"] = "foobar"
+
+      xattr.to_h.should eq({"user.xdg.comments" => "foobar", "user.xdg.tags" => "mytag1"})
     end
   end
 end
