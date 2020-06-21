@@ -26,8 +26,8 @@ Extended attributes are name:value pairs associated permanently with files and d
 require "xattr"
 
 xattr = XAttr.new("./myfile.txt")
-xattr["tags"] = "mytag1,mytag2"
-xattr["tags"]
+xattr["user.tags"] = "mytag1,mytag2"
+xattr["user.tags"]
 # => "mytag1,mytag2"
 
 xattr.keys
@@ -36,11 +36,11 @@ xattr.keys
 xattr.to_h
 # => { "tags" => "mytag1,mytag2" }
 
-xattr.remove("tags")
+xattr.remove("user.tags")
 xattr.keys
 # => []
 
-xattr["tags"]
+xattr["user.tags"]
 # => nil
 ```
 
