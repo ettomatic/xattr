@@ -25,20 +25,23 @@ Extended attributes are name:value pairs associated permanently with files and d
 ```crystal
 require "xattr"
 
- xattr = XAttr.new("./myfile.txt")
- xattr["tags"] = "mytag1,mytag2"
- xattr["tags"]
- # => "mytag1,mytag2"
+xattr = XAttr.new("./myfile.txt")
+xattr["tags"] = "mytag1,mytag2"
+xattr["tags"]
+# => "mytag1,mytag2"
 
- xattr.list
- # => ["tags"]
+xattr.keys
+# => ["tags"]
 
- xattr.remove("tags")
- xattr.list
- # => []
+xattr.to_h
+# => { "tags" => "mytag1,mytag2" }
 
- xattr["tags"]
- # => nil
+xattr.remove("tags")
+xattr.keys
+# => []
+
+xattr["tags"]
+# => nil
 ```
 
 ## Contributing
