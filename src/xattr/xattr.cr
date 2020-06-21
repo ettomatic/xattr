@@ -22,7 +22,7 @@ module XAttr
       res
     end
 
-    def list
+    def keys
       size = bindings.list(@path, nil, 0)
       return [] of String unless size > 0
 
@@ -40,7 +40,7 @@ module XAttr
     end
 
     def each
-      list.each do |k|
+      keys.each do |k|
         yield k, self.[](k)
       end
     end

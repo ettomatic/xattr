@@ -66,7 +66,7 @@ describe XAttr do
     end
   end
 
-  describe "list" do
+  describe "keys" do
     context "with xattrs set on the target file" do
       it "returns the attrs assigned to a target file sorted alphabetically" do
         path = "spec/test_list.txt"
@@ -77,7 +77,7 @@ describe XAttr do
         xattr[key] = "mytag1"
         xattr["user.xdg.comments"] = "foobar"
 
-        xattr.list.should eq ["user.xdg.comments", "user.xdg.tags"]
+        xattr.keys.should eq ["user.xdg.comments", "user.xdg.tags"]
 
         File.delete(path)
       end
@@ -89,7 +89,7 @@ describe XAttr do
         file = File.touch(path)
 
         xattr = XAttr.new(path)
-        xattr.list.should eq [] of String
+        xattr.keys.should eq [] of String
 
         File.delete(path)
       end
@@ -98,7 +98,7 @@ describe XAttr do
     context "with no file" do
       it "returns an empty array" do
         xattr = XAttr.new("spec/not_there.txt")
-        xattr.list.should eq [] of String
+        xattr.keys.should eq [] of String
       end
     end
   end
@@ -113,7 +113,7 @@ describe XAttr do
 
       xattr.remove(key)
 
-      xattr.list.should eq [] of String
+      xattr.keys.should eq [] of String
       File.delete(path)
     end
 
