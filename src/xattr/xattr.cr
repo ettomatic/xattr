@@ -1,23 +1,24 @@
 module XAttr
   class XAttr
-    def initialize(path : String)
+    def initialize(path : String, no_follow = false)
       @path = path
+      @no_follow = no_follow
     end
 
     def [](key)
-      size = bindings.get(@path, key, nil, 0)
+      size = bindings.get(@path, key, nil, 0, @no_follow)
       raise_error(size) if size == -1
       return unless size > 0
 
       ptr = Slice(LibC::Char).new(size)
-      res = bindings.get(@path, key, ptr, size)
+      res = bindings.get(@path, key, ptr, size, @no_follow)
       raise_error(res) if res == -1
 
       String.new(ptr)
     end
 
     def []=(key, value)
-      res = bindings.set(@path, key, value, value.bytesize)
+      res = bindings.set(@path, key, value, value.bytesize, @no_follow)
       raise_error(res) if res == -1
 
       res
