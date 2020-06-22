@@ -15,19 +15,30 @@ describe XAttr do
       File.delete(path)
     end
 
-    it "returns nil if xattr is not set" do
+    it "raises IO Error if xattr is not set" do
       path = "spec/test_get.txt"
       file = File.touch(path)
 
-      xattr = XAttr.new(path)
-      xattr["foo"].should eq nil
+      {% if flag?(:linux) %}
+        expect_raises(IO::Error, "Please check the target file: Operation not supported") do
+          xattr = XAttr.new(path)
+          xattr["foo"]
+        end
+      {% elsif flag?(:darwin) %}
+        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+          xattr = XAttr.new(path)
+          xattr["foo"]
+        end
+      {% end %}
 
       File.delete(path)
     end
 
-    it "returns nil if target file is missing" do
-      xattr = XAttr.new("spec/not_there.txt")
-      xattr[key].should eq nil
+    it "raises IO Error ENOENT if target file is missing" do
+      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+        xattr = XAttr.new("spec/not_there.txt")
+        xattr[key]
+      end
     end
   end
 
@@ -96,9 +107,11 @@ describe XAttr do
     end
 
     context "with no file" do
-      it "returns an empty array" do
-        xattr = XAttr.new("spec/not_there.txt")
-        xattr.keys.should eq [] of String
+      it "raises IO Error" do
+        expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+          xattr = XAttr.new("spec/not_there.txt")
+          xattr.keys
+        end
       end
     end
   end

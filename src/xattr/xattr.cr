@@ -6,6 +6,7 @@ module XAttr
 
     def [](key)
       size = bindings.get(@path, key, nil, 0)
+      raise_error(size) if size == -1
       return unless size > 0
 
       ptr = Slice(LibC::Char).new(size)
@@ -24,6 +25,7 @@ module XAttr
 
     def keys
       size = bindings.list(@path, nil, 0)
+      raise_error(size) if size == -1
       return [] of String unless size > 0
 
       ptr = Slice(LibC::Char).new(size)
