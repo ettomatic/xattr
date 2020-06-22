@@ -20,15 +20,14 @@ describe XAttr do
     it "raises IO Error if xattr is not set" do
       file = File.touch(path)
 
+      xattr = XAttr.new(path)
       {% if flag?(:linux) %}
         expect_raises(IO::Error, "Please check the target file: Operation not supported") do
-          xattr = XAttr.new(path)
-          xattr["foo"]
+          xattr["user.foo"]
         end
       {% elsif flag?(:darwin) %}
         expect_raises(IO::Error, "Please check the target file: Attribute not found") do
-          xattr = XAttr.new(path)
-          xattr["foo"]
+          xattr["user.foo"]
         end
       {% end %}
     end
@@ -120,6 +119,21 @@ describe XAttr do
         xattr = XAttr.new("spec/test_dir/not_there.txt")
         xattr.remove(key)
       end
+    end
+
+    it "raise an exception if the xattr does not exist" do
+      file = File.touch(path)
+
+      xattr = XAttr.new(path)
+      {% if flag?(:linux) %}
+        expect_raises(IO::Error, "Please check the target file: Operation not supported") do
+          xattr.remove("user.foo")
+        end
+      {% elsif flag?(:darwin) %}
+        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+          xattr.remove("user.foo")
+        end
+      {% end %}
     end
   end
 
