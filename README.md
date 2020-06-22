@@ -8,6 +8,8 @@ This library allows to manage extended file attributes (XATTR). Filesystem suppo
 
 Extended attributes are name:value pairs associated permanently with files and directories and can be used to add semantic metadata, see [guidelines](https://www.freedesktop.org/wiki/CommonExtendedAttributes/).
 
+Where the platform allows it, XAttr supports setting extended attributes to symlinks.
+
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
@@ -55,3 +57,4 @@ xattr["user.tags"]
 ## Contributors
 
 - [Ettore Berardi](https://github.com/ettomatic) - creator and maintainer
+- [Aravinda Vishwanathapura](https://github.com/aravindavk) - contributor
