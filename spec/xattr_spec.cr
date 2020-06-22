@@ -8,7 +8,7 @@ describe XAttr do
     Dir["spec/test_dir/*.txt"].each { |f| File.delete(f) }
   end
 
-  describe "get" do
+  describe "[]" do
     it "returns the specific xattr value assigned to a target file" do
       file = File.touch(path)
 
@@ -22,7 +22,7 @@ describe XAttr do
 
       xattr = XAttr.new(path)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: Operation not supported") do
+        expect_raises(IO::Error, "Please check the target file: No data available") do
           xattr["user.foo"]
         end
       {% elsif flag?(:darwin) %}
@@ -40,7 +40,7 @@ describe XAttr do
     end
   end
 
-  describe "set" do
+  describe "[]=" do
     it "sets a value to the target file" do
       file = File.touch(path)
 
@@ -126,7 +126,7 @@ describe XAttr do
 
       xattr = XAttr.new(path)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: Operation not supported") do
+        expect_raises(IO::Error, "Please check the target file: No data available") do
           xattr.remove("user.foo")
         end
       {% elsif flag?(:darwin) %}
