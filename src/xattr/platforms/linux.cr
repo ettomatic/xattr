@@ -30,12 +30,20 @@ module XAttr
         end
       end
 
-      def self.list(path, list, size)
-        LibXAttr.listxattr(path, list, size)
+      def self.list(path, list, size, no_follow)
+        if no_follow
+          LibXAttr.llistxattr(path, list, size)
+        else
+          LibXAttr.listxattr(path, list, size)
+        end
       end
 
-      def self.remove(path, key)
-        LibXAttr.removexattr(path, key)
+      def self.remove(path, key, no_follow)
+        if no_follow
+          LibXAttr.lremovexattr(path, key)
+        else
+          LibXAttr.removexattr(path, key)
+        end
       end
     end
   end

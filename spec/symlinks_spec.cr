@@ -14,30 +14,43 @@ describe "symlinks" do
     end
 
     context "with no_follow set to true" do
-      it "raise an error if trying to set a xattr on a symlink" do
-        File.symlink?(symlink_path).should be_true
+      {% if flag?(:linux) %}
+        it "raise an error if trying to set a xattr on a symlink" do
+          File.symlink?(symlink_path).should be_true
 
-        symlink_xattr = XAttr.new(symlink_path, no_follow: true)
+          symlink_xattr = XAttr.new(symlink_path, no_follow: true)
 
-        expect_raises(IO::Error, "Please check the target file: Operation not permitted") do
-          symlink_xattr[key] = "mytag1"
+          expect_raises(IO::Error, "Please check the target file: Operation not permitted") do
+            symlink_xattr[key] = "mytag1"
+          end
         end
-      end
+      {% elsif flag?(:darwin) %}
+        it "set the xattr on the symlink" do
+          File.symlink?(symlink_path).should be_true
+
+          symlink_xattr = XAttr.new(symlink_path, no_follow: true)
+          symlink_xattr[key] = "mytag1"
+          symlink_xattr.to_h.should eq({"user.xdg.tags" => "mytag1"})
+
+          xattr = XAttr.new(path)
+          xattr.to_h.should eq({} of String => String)
+        end
+
+        it "removes the xattr on the symlink" do
+          File.symlink?(symlink_path).should be_true
+
+          symlink_xattr = XAttr.new(symlink_path, no_follow: true)
+          symlink_xattr[key] = "mytag1"
+          symlink_xattr.to_h.should eq({"user.xdg.tags" => "mytag1"})
+
+          xattr = XAttr.new(path)
+          xattr.to_h.should eq({} of String => String)
+        end
+      {% end %}
     end
 
     context "with no_follow set to false (default behaviour)" do
       it "set the xattr on the symlinked file " do
-        File.symlink?(symlink_path).should be_true
-
-        symlink_xattr = XAttr.new(symlink_path, no_follow: false)
-        symlink_xattr[key] = "mytag1"
-        symlink_xattr[key].should eq "mytag1"
-
-        xattr = XAttr.new(path)
-        xattr[key].should eq "mytag1"
-      end
-
-      it "removes the xattr from the symlinked file" do
         File.symlink?(symlink_path).should be_true
 
         symlink_xattr = XAttr.new(symlink_path, no_follow: false)

@@ -70,28 +70,28 @@ describe XAttr do
     end
   end
 
-    describe "keys" do
-      context "with xattrs set on the target file" do
-        it "returns the attrs assigned to a target file sorted alphabetically" do
-          file = File.touch(path)
+  describe "keys" do
+    context "with xattrs set on the target file" do
+      it "returns the attrs assigned to a target file sorted alphabetically" do
+        file = File.touch(path)
 
-          xattr = XAttr.new(path)
+        xattr = XAttr.new(path)
 
-          xattr[key] = "mytag1"
-          xattr["user.xdg.comments"] = "foobar"
+        xattr[key] = "mytag1"
+        xattr["user.xdg.comments"] = "foobar"
 
-          xattr.keys.should eq ["user.xdg.comments", "user.xdg.tags"]
-        end
+        xattr.keys.should eq ["user.xdg.comments", "user.xdg.tags"]
       end
+    end
 
-      context "with no xattrs set on the file" do
-        it "returns an empty array" do
-          file = File.touch(path)
+    context "with no xattrs set on the file" do
+      it "returns an empty array" do
+        file = File.touch(path)
 
-          xattr = XAttr.new(path)
-          xattr.keys.should eq [] of String
-        end
+        xattr = XAttr.new(path)
+        xattr.keys.should eq [] of String
       end
+    end
 
     context "with no file" do
       it "raises IO Error" do
