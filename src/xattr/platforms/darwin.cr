@@ -10,20 +10,30 @@ module XAttr
         {% end %}
       end
 
-      def self.get(path, key, value, size)
-        LibXAttr.getxattr(path, key, value, size, 0, 0)
+      XATTR_NOFOLLOW = 0x0001
+
+      def self.get(path, key, value, size, no_follow)
+        options = no_follow ? XATTR_NOFOLLOW : 0
+
+        LibXAttr.getxattr(path, key, value, size, 0, options)
       end
 
-      def self.set(path, key, value, size)
-        LibXAttr.setxattr(path, key, value, value.bytesize, 0, 0)
+      def self.set(path, key, value, size, no_follow)
+        options = no_follow ? XATTR_NOFOLLOW : 0
+
+        LibXAttr.setxattr(path, key, value, value.bytesize, 0, options)
       end
 
-      def self.list(path, list, size)
-        LibXAttr.listxattr(path, list, size, 0)
+      def self.list(path, list, size, no_follow)
+        options = no_follow ? XATTR_NOFOLLOW : 0
+
+        LibXAttr.listxattr(path, list, size, options)
       end
 
-      def self.remove(path, key)
-        LibXAttr.removexattr(path, key, 0)
+      def self.remove(path, key, no_follow)
+        options = no_follow ? XATTR_NOFOLLOW : 0
+
+        LibXAttr.removexattr(path, key, options)
       end
     end
   end

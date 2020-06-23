@@ -2,36 +2,34 @@ require "./spec_helper"
 
 describe XAttr do
   key = "user.xdg.tags"
+  path = "spec/test_dir/test_get.txt"
 
-  describe "get" do
+  before_each do
+    Dir["spec/test_dir/*.txt"].each { |f| File.delete(f) }
+  end
+
+  describe "[]" do
     it "returns the specific xattr value assigned to a target file" do
-      path = "spec/test_get.txt"
       file = File.touch(path)
 
       xattr = XAttr.new(path)
       xattr[key] = "mytag1"
       xattr[key].should eq "mytag1"
-
-      File.delete(path)
     end
 
     it "raises IO Error if xattr is not set" do
-      path = "spec/test_get.txt"
       file = File.touch(path)
 
+      xattr = XAttr.new(path)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: Operation not supported") do
-          xattr = XAttr.new(path)
-          xattr["foo"]
+        expect_raises(IO::Error, "Please check the target file: No data available") do
+          xattr["user.foo"]
         end
       {% elsif flag?(:darwin) %}
         expect_raises(IO::Error, "Please check the target file: Attribute not found") do
-          xattr = XAttr.new(path)
-          xattr["foo"]
+          xattr["user.foo"]
         end
       {% end %}
-
-      File.delete(path)
     end
 
     it "raises IO Error ENOENT if target file is missing" do
@@ -42,20 +40,16 @@ describe XAttr do
     end
   end
 
-  describe "set" do
+  describe "[]=" do
     it "sets a value to the target file" do
-      path = "spec/test_set.txt"
       file = File.touch(path)
 
       xattr = XAttr.new(path)
       xattr[key] = "mytag1"
       xattr[key].should eq "mytag1"
-
-      File.delete(path)
     end
 
     it "overrides existing value" do
-      path = "spec/test_set.txt"
       file = File.touch(path)
 
       xattr = XAttr.new(path)
@@ -65,13 +59,11 @@ describe XAttr do
 
       xattr[key] = "mytag2"
       xattr[key].should eq "mytag2"
-
-      File.delete(path)
     end
 
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "Please check the target file: No such file or directory") do
-        xattr = XAttr.new("spec/not_there.txt")
+        xattr = XAttr.new("spec/test_dir/not_there.txt")
         xattr[key] = "mytag1"
       end
     end
@@ -80,7 +72,6 @@ describe XAttr do
   describe "keys" do
     context "with xattrs set on the target file" do
       it "returns the attrs assigned to a target file sorted alphabetically" do
-        path = "spec/test_list.txt"
         file = File.touch(path)
 
         xattr = XAttr.new(path)
@@ -89,20 +80,15 @@ describe XAttr do
         xattr["user.xdg.comments"] = "foobar"
 
         xattr.keys.should eq ["user.xdg.comments", "user.xdg.tags"]
-
-        File.delete(path)
       end
     end
 
     context "with no xattrs set on the file" do
       it "returns an empty array" do
-        path = "spec/test_list.txt"
         file = File.touch(path)
 
         xattr = XAttr.new(path)
         xattr.keys.should eq [] of String
-
-        File.delete(path)
       end
     end
 
@@ -118,7 +104,6 @@ describe XAttr do
 
   describe "remove" do
     it "removes the xattr from the target file" do
-      path = "spec/test_remove.txt"
       file = File.touch(path)
 
       xattr = XAttr.new(path)
@@ -127,20 +112,33 @@ describe XAttr do
       xattr.remove(key)
 
       xattr.keys.should eq [] of String
-      File.delete(path)
     end
 
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "Please check the target file: No such file or directory") do
-        xattr = XAttr.new("spec/not_there.txt")
+        xattr = XAttr.new("spec/test_dir/not_there.txt")
         xattr.remove(key)
       end
+    end
+
+    it "raise an exception if the xattr does not exist" do
+      file = File.touch(path)
+
+      xattr = XAttr.new(path)
+      {% if flag?(:linux) %}
+        expect_raises(IO::Error, "Please check the target file: No data available") do
+          xattr.remove("user.foo")
+        end
+      {% elsif flag?(:darwin) %}
+        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+          xattr.remove("user.foo")
+        end
+      {% end %}
     end
   end
 
   describe "to_h" do
     it " returns an hash map of attrs/values" do
-      path = "spec/test_hash.txt"
       file = File.touch(path)
 
       xattr = XAttr.new(path)
