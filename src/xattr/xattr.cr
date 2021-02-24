@@ -1,8 +1,10 @@
 module XAttr
   class XAttr
-    def initialize(path : String, no_follow = false)
+    def initialize(path : String, no_follow = false, only_create = false, only_replace = false)
       @path = path
       @no_follow = no_follow
+      @only_create = only_create
+      @only_replace = only_replace
     end
 
     def [](key)
@@ -18,7 +20,7 @@ module XAttr
     end
 
     def []=(key, value)
-      res = bindings.set(@path, key, value, value.bytesize, @no_follow)
+      res = bindings.set(@path, key, value, value.bytesize, @no_follow, @only_create, @only_replace)
       raise_error(res) if res == -1
 
       res

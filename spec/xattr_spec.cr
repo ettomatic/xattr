@@ -61,11 +61,75 @@ describe XAttr do
       xattr[key].should eq "mytag2"
     end
 
+    it "raise an exception if both only_create and only_replace arguments specified" do
+      file = File.touch(path)
+
+      {% if flag?(:linux) %}
+        expect_raises(IO::Error, "Please check the target file: No data available") do
+          xattr = XAttr.new(path, only_create: true, only_replace: true)
+          xattr[key] = "mytag1"
+        end
+
+        expect_raises(IO::Error, "Please check the target file: File exists") do
+          xattr = XAttr.new(path)
+          xattr[key] = "mytag1"
+
+          xattr = XAttr.new(path, only_create: true, only_replace: true)
+          xattr[key] = "mytag2"
+        end
+      {% elsif flag?(:darwin) %}
+        expect_raises(IO::Error, "Please check the target file: Invalid argument") do
+          xattr = XAttr.new(path, only_create: true, only_replace: true)
+          xattr[key] = "mytag1"
+        end
+      {% end %}
+    end
+
     it "raise an exception if the target file is missing" do
       expect_raises(IO::Error, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/test_dir/not_there.txt")
         xattr[key] = "mytag1"
       end
+    end
+
+    it "raise an exception if the target file already has that xattr" do
+      file = File.touch(path)
+
+      xattr = XAttr.new(path, only_create: true)
+      xattr[key] = "mytag2"
+
+      expect_raises(IO::Error, "Please check the target file: File exists") do
+        xattr[key] = "mytag2"
+      end
+    end
+
+    it "Replaces the existing value" do
+      file = File.touch(path)
+
+      xattr = XAttr.new(path)
+
+      xattr[key] = "mytag1"
+      xattr[key].should eq "mytag1"
+
+      xattr = XAttr.new(path, only_replace: true)
+
+      xattr[key] = "mytag2"
+      xattr[key].should eq "mytag2"
+    end
+
+    it "raise an exception if the target file doesn't have that xattr" do
+      file = File.touch(path)
+
+      xattr = XAttr.new(path, only_replace: true)
+      {% if flag?(:linux) %}
+        expect_raises(IO::Error, "Please check the target file: No data available") do
+          xattr["user.xdg.nonexisting"] = "mytag1"
+        end
+      {% elsif flag?(:darwin) %}
+        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+          xattr["user.xdg.nonexisting"] = "mytag1"
+        end
+      {% end %}
     end
   end
 

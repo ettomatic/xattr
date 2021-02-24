@@ -5,7 +5,7 @@ require "./xattr/**"
 module XAttr
   VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify }}
 
-  def self.new(path : String, no_follow = false)
-    XAttr.new(path, no_follow: no_follow)
+  def self.new(path : String, no_follow = false, only_create = false, only_replace = false)
+    XAttr.new(path, no_follow: no_follow, only_create: only_create, only_replace: only_replace)
   end
 end

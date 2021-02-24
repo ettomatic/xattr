@@ -11,6 +11,8 @@ module XAttr
       end
 
       XATTR_NOFOLLOW = 0x0001
+      XATTR_CREATE   = 0x0002 # set the value, fail if attr already exists
+      XATTR_REPLACE  = 0x0004 # set the value, fail if attr does not exist
 
       def self.get(path, key, value, size, no_follow)
         options = no_follow ? XATTR_NOFOLLOW : 0
@@ -18,8 +20,13 @@ module XAttr
         LibXAttr.getxattr(path, key, value, size, 0, options)
       end
 
-      def self.set(path, key, value, size, no_follow)
+      def self.set(path, key, value, size, no_follow, only_create, only_replace)
         options = no_follow ? XATTR_NOFOLLOW : 0
+
+        # If both XATTR_CREATE and XATTR_REPLACE are set
+        # then it raises EINVAL
+        options |= XATTR_CREATE if only_create
+        options |= XATTR_REPLACE if only_replace
 
         LibXAttr.setxattr(path, key, value, value.bytesize, 0, options)
       end
