@@ -2,6 +2,7 @@ module XAttr
   class XAttr
     def initialize(@path : String | Path, @no_follow = false, @only_create = false, @only_replace = false)
 			@path = Path.new(@path).expand
+			raise File::NotFoundError.from_errno("Please check the target file: No such file or directory", file: @path) unless File.exists? @path
     end
 
     def [](key)
@@ -37,7 +38,6 @@ module XAttr
     def remove(key)
       res = bindings.remove(@path.to_s, key, @no_follow)
       raise_error(res) if res == -1
-
       res
     end
 
@@ -54,7 +54,7 @@ module XAttr
     end
 
     private def raise_error(res)
-      raise IO::Error.from_errno("Please check the target file")
+      raise File::Error.from_errno("Please check the target file", file: @path)
     end
 
     private def bindings
