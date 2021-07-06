@@ -4,6 +4,6 @@ version: 0.7.0
 authors:
   - Ettore Berardi <ettore.berardi@outlook.com>
 
-crystal: 0.35.0
+crystal: ">= 0.35.0, < 2.0.0"
 
 license: MIT
