@@ -22,18 +22,18 @@ describe XAttr do
 
       xattr = XAttr.new(path)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: No data available") do
+        expect_raises(File::Error, "Please check the target file: No data available") do
           xattr["user.foo"]
         end
       {% elsif flag?(:darwin) %}
-        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+        expect_raises(File::Error, "Please check the target file: Attribute not found") do
           xattr["user.foo"]
         end
       {% end %}
     end
 
     it "raises IO Error ENOENT if target file is missing" do
-      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+      expect_raises(File::Error, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/not_there.txt")
         xattr[key]
       end
@@ -65,12 +65,12 @@ describe XAttr do
       file = File.touch(path)
 
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: No data available") do
+        expect_raises(File::Error, "Please check the target file: No data available") do
           xattr = XAttr.new(path, only_create: true, only_replace: true)
           xattr[key] = "mytag1"
         end
 
-        expect_raises(IO::Error, "Please check the target file: File exists") do
+        expect_raises(File::Error, "Please check the target file: File exists") do
           xattr = XAttr.new(path)
           xattr[key] = "mytag1"
 
@@ -78,7 +78,7 @@ describe XAttr do
           xattr[key] = "mytag2"
         end
       {% elsif flag?(:darwin) %}
-        expect_raises(IO::Error, "Please check the target file: Invalid argument") do
+        expect_raises(File::Error, "Please check the target file: Invalid argument") do
           xattr = XAttr.new(path, only_create: true, only_replace: true)
           xattr[key] = "mytag1"
         end
@@ -86,7 +86,7 @@ describe XAttr do
     end
 
     it "raise an exception if the target file is missing" do
-      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+      expect_raises(File::Error, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/test_dir/not_there.txt")
         xattr[key] = "mytag1"
       end
@@ -98,7 +98,7 @@ describe XAttr do
       xattr = XAttr.new(path, only_create: true)
       xattr[key] = "mytag2"
 
-      expect_raises(IO::Error, "Please check the target file: File exists") do
+      expect_raises(File::Error, "Please check the target file: File exists") do
         xattr[key] = "mytag2"
       end
     end
@@ -122,11 +122,11 @@ describe XAttr do
 
       xattr = XAttr.new(path, only_replace: true)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: No data available") do
+        expect_raises(File::Error, "Please check the target file: No data available") do
           xattr["user.xdg.nonexisting"] = "mytag1"
         end
       {% elsif flag?(:darwin) %}
-        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+        expect_raises(File::Error, "Please check the target file: Attribute not found") do
           xattr["user.xdg.nonexisting"] = "mytag1"
         end
       {% end %}
@@ -158,7 +158,7 @@ describe XAttr do
 
     context "with no file" do
       it "raises IO Error" do
-        expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+        expect_raises(File::Error, "Please check the target file: No such file or directory") do
           xattr = XAttr.new("spec/not_there.txt")
           xattr.keys
         end
@@ -179,8 +179,16 @@ describe XAttr do
     end
 
     it "raise an exception if the target file is missing" do
-      expect_raises(IO::Error, "Please check the target file: No such file or directory") do
+      expect_raises(File::NotFoundError, "Please check the target file: No such file or directory") do
         xattr = XAttr.new("spec/test_dir/not_there.txt")
+      end
+    end
+
+    it "raise an exception if the target file is missing (removed while setting up)" do
+      expect_raises(File::NotFoundError, "Please check the target file: No such file or directory") do
+				file = File.touch(path)
+        xattr = XAttr.new(path)
+        File.delete path
         xattr.remove(key)
       end
     end
@@ -190,11 +198,11 @@ describe XAttr do
 
       xattr = XAttr.new(path)
       {% if flag?(:linux) %}
-        expect_raises(IO::Error, "Please check the target file: No data available") do
+        expect_raises(File::Error, "Please check the target file: No data available") do
           xattr.remove("user.foo")
         end
       {% elsif flag?(:darwin) %}
-        expect_raises(IO::Error, "Please check the target file: Attribute not found") do
+        expect_raises(File::Error, "Please check the target file: Attribute not found") do
           xattr.remove("user.foo")
         end
       {% end %}
